@@ -15,6 +15,9 @@ class TESTPROJECT2_API UTitleWidget : public UUserWidget
 	GENERATED_BODY()
 	
 public:
+
+
+
 	UFUNCTION(BlueprintCallable, Category = "Test")
 	void MoveWidget();
 
@@ -24,5 +27,13 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget), Category = "Test")
 	class UImage* OrderImage;
+
+private:
+	FTimerHandle MoveTimerHandle; 
+	FVector2D TargetOffset = FVector2D(5.0f, 0.0f); 
+	float MoveDuration = 2.0f;
+	float MoveTimeElapsed = 10.0f;
+
+	void UpdateWidgetPosition();
 
 };
