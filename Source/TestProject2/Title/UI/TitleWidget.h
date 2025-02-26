@@ -9,6 +9,14 @@
 /**
  * 
  */
+
+struct OrderInfo
+{
+	class UImage* OrderImage = nullptr;
+	FVector2D Position = {0.0f, 0.0f};
+	bool bExistOrder = false;
+};
+
 UCLASS()
 class TESTPROJECT2_API UTitleWidget : public UUserWidget
 {
@@ -16,24 +24,38 @@ class TESTPROJECT2_API UTitleWidget : public UUserWidget
 	
 public:
 
-
-
 	UFUNCTION(BlueprintCallable, Category = "Test")
 	void MoveWidget();
 
 	UFUNCTION(BlueprintCallable, Category = "Test")
 	void OrderComplete();
-	
+
+	UFUNCTION(BlueprintCallable, Category = "Test")
+	void NewOrder();
+
+	UFUNCTION(BlueprintCallable, Category = "Test")
+	void AddInitialOrder();
+
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget), Category = "Test")
 	class UImage* OrderImage;
 
 private:
 	FTimerHandle MoveTimerHandle; 
-	FVector2D TargetOffset = FVector2D(5.0f, 0.0f); 
-	float MoveDuration = 2.0f;
+	FVector2D TargetOffset = FVector2D(50.0f, 0.0f);
 	float MoveTimeElapsed = 10.0f;
 
-	void UpdateWidgetPosition();
+	FVector2D CurPosition = FVector2D(0.0f, 0.0f);
+	FVector2D CurScale = FVector2D(0.0f, 0.0f);
 
+
+	FTimerHandle OpacityTimerHandle;
+	float OpacityTimeElapsed = 10.0f;
+	float OpacityOffset = 0.05f;
+
+
+	void UpdateWidgetPosition();
+	void UpdateWidgetOpacity();
+
+	TArray<OrderInfo> Orders;
 };
