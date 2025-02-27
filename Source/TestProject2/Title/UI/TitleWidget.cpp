@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "TestProject2.h"
 #include "Title/UI/TitleWidget.h"
+#include "TestProject2.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/Image.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
@@ -62,8 +62,7 @@ void UTitleWidget::UpdateWidgetPosition()
     if (!OrderImage) return;
 
     FVector2D CurrentPosition = OrderImage->GetRenderTransform().Translation;
-    float CurrentAngle = OrderImage->RenderTransform.Angle;
-
+    float CurrentAngle = OrderImage->GetRenderTransform().Angle;
 
     if (CurrentPosition.X <= CurPosition.X && CurrentAngle >= 0.0f)
     {

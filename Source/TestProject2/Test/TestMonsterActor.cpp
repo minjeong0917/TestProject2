@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "TestProject2.h"
 #include "Test/TestMonsterActor.h"
+#include "TestProject2.h"
 
 // Sets default values
 ATestMonsterActor::ATestMonsterActor()
