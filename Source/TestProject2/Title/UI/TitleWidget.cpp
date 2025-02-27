@@ -6,20 +6,11 @@
 #include "Components/Image.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
 
-void UTitleWidget::MoveWidget()
-{
-    if (!OrderImage) return;
 
-    MoveTimeElapsed = 0.0f; 
-
-    GetWorld()->GetTimerManager().SetTimer(MoveTimerHandle, this, &UTitleWidget::UpdateWidgetPosition, 0.01f, true);
-}
 
 void UTitleWidget::OrderComplete()
 {
     if (!OrderImage) return;
-
-    OpacityTimeElapsed = 0.0f;
 
     GetWorld()->GetTimerManager().SetTimer(OpacityTimerHandle, this, &UTitleWidget::UpdateWidgetOpacity, 0.01f, true);
 }
@@ -45,17 +36,6 @@ void UTitleWidget::NewOrder()
     GetWorld()->GetTimerManager().SetTimer(MoveTimerHandle, this, &UTitleWidget::UpdateWidgetPosition, 0.01f, true);
 }
 
-void UTitleWidget::AddInitialOrder()
-{
-    if (!OrderImage) return;
-
-    OrderInfo FirstOrder;
-    FirstOrder.OrderImage = OrderImage;
-    FirstOrder.bExistOrder = true;
-    FirstOrder.Position = OrderImage->GetRenderTransform().Translation;
-
-    Orders.Add(FirstOrder);
-}
 
 void UTitleWidget::UpdateWidgetPosition()
 {
@@ -101,5 +81,4 @@ void UTitleWidget::UpdateWidgetOpacity()
     float CurOpacity = OrderImage->GetColorAndOpacity().A;
     OrderImage->SetColorAndOpacity({ OrderImage->GetColorAndOpacity().R, OrderImage->GetColorAndOpacity().G, OrderImage->GetColorAndOpacity().B, FMath::Clamp(CurOpacity - OpacityOffset, 0.0f, 1.0f) });
 
-    OpacityTimeElapsed += 0.01f;
 }
