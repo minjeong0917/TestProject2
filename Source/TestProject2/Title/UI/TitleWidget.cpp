@@ -10,75 +10,77 @@
 
 void UTitleWidget::OrderComplete()
 {
-    if (!OrderImage) return;
+    if (!Orders[CompleteOrderNum].BackgroundImage) return;
 
-    GetWorld()->GetTimerManager().SetTimer(OpacityTimerHandle, this, &UTitleWidget::UpdateWidgetOpacity, 0.01f, true);
+    GetWorld()->GetTimerManager().SetTimer(OpacityTimerHandle, this, &UTitleWidget::UpdateImageOpacity, 0.01f, true);
+
 }
 
 
-void UTitleWidget::NewOrder()
+void UTitleWidget::NativeOnInitialized()
 {
-    if (!OrderImage) return;
+    Super::NativeOnInitialized();
+    Orders.SetNum(3);
 
-    MoveTimeElapsed = 0.0f;
-    CurPosition = OrderImage->GetRenderTransform().Translation;
-    CurScale = OrderImage->GetRenderTransform().Scale;
+    Orders[0].BackgroundImage = OrderBackground_0;
+    Orders[1].BackgroundImage = OrderBackground_1;
+    Orders[2].BackgroundImage = OrderBackground_2;
 
-    FVector2D ScreenSize = UWidgetLayoutLibrary::GetViewportSize(this);
-    float WidgetHeight = OrderImage->GetDesiredSize().Y;
-    float FinalPosition = ScreenSize.X * 1.5f;
-
-    OrderImage->SetRenderTransformAngle(-20.0f);
-    OrderImage->SetRenderScale({ CurScale.X,CurScale.Y * 2 });
-    OrderImage->SetRenderTranslation({ FinalPosition, -WidgetHeight * 2.5f });
-    OrderImage->SetColorAndOpacity({ OrderImage->GetColorAndOpacity().R, OrderImage->GetColorAndOpacity().G, OrderImage->GetColorAndOpacity().B, 1.0f });
-
-    GetWorld()->GetTimerManager().SetTimer(MoveTimerHandle, this, &UTitleWidget::UpdateWidgetPosition, 0.01f, true);
-}
-
-
-void UTitleWidget::UpdateWidgetPosition()
-{
-    if (!OrderImage) return;
-
-    FVector2D CurrentPosition = OrderImage->GetRenderTransform().Translation;
-    float CurrentAngle = OrderImage->GetRenderTransform().Angle;
-
-    if (CurrentPosition.X <= CurPosition.X && CurrentAngle >= 0.0f)
+    float StartPosX = 20.0f;
+    float offset = 10.0f;
+    for (int i = 0; i < Orders.Num(); i++)
     {
-        OrderImage->SetRenderScale(CurScale);
-        OrderImage->SetRenderTranslation(CurPosition);
-        GetWorld()->GetTimerManager().ClearTimer(MoveTimerHandle);
-        return;
-    }
-    else
-    {
-        if (CurrentPosition.X > CurPosition.X)
-        {
-            OrderImage->SetRenderTranslation(CurrentPosition - FVector2D(TargetOffset.X + MoveTimeElapsed, 0));
-        }
-        if (CurrentAngle < 0.0f)
-        {
-            OrderImage->SetRenderTransformAngle(CurrentAngle + 0.5f);
-        }
+
+        Orders[i].Position = { StartPosX + offset * i, 0.0f };
+        Orders[i].BackgroundImage->SetRenderTranslation(Orders[i].Position);
     }
 
-    MoveTimeElapsed += 0.1f;
 }
 
 
-
-void UTitleWidget::UpdateWidgetOpacity()
+void UTitleWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
-    if (!OrderImage) return;
+    Super::NativeTick(MyGeometry, InDeltaTime);
 
-    if (OrderImage->GetColorAndOpacity().A <= 0.0f)
+    UpdateImagePosition(InDeltaTime);
+}
+
+void UTitleWidget::UpdateImageOpacity()
+{
+
+    if (Orders[CompleteOrderNum].BackgroundImage->GetColorAndOpacity().A <= 0.0f)
     {
+        Orders[CompleteOrderNum].BackgroundImage->SetVisibility(ESlateVisibility::Collapsed);
+
+        for (int i = CompleteOrderNum; i < Orders.Num() - 1; i++)
+        {
+            //const TArray<UPanelSlot*> slots = CanvasPanel->GetSlots();
+            //UCanvasPanelSlot* CPSlot = Cast<UCanvasPanelSlot>(slots[0]);
+            //CPSlot->SetPosition(CPSlot->GetPosition() + FVector2D(100, 0));
+
+            Orders[i + 1].BackgroundImage->SetRenderTranslation({ Orders[i].Position.X - 260 /*Orders[i].BackgroundImage->GetDesiredSize().X*/ , 0.0f });
+        }
+
+        for (int i = CompleteOrderNum; i < Orders.Num() - 1; i++)
+        {
+
+            Orders[i].BackgroundImage = Orders[i + 1].BackgroundImage;
+        }
+
+
         GetWorld()->GetTimerManager().ClearTimer(OpacityTimerHandle);
         return;
     }
 
-    float CurOpacity = OrderImage->GetColorAndOpacity().A;
-    OrderImage->SetColorAndOpacity({ OrderImage->GetColorAndOpacity().R, OrderImage->GetColorAndOpacity().G, OrderImage->GetColorAndOpacity().B, FMath::Clamp(CurOpacity - OpacityOffset, 0.0f, 1.0f) });
+    float CurOpacity = Orders[CompleteOrderNum].BackgroundImage->GetColorAndOpacity().A;
+    Orders[CompleteOrderNum].BackgroundImage->SetColorAndOpacity({ Orders[CompleteOrderNum].BackgroundImage->GetColorAndOpacity().R, Orders[CompleteOrderNum].BackgroundImage->GetColorAndOpacity().G, Orders[CompleteOrderNum].BackgroundImage->GetColorAndOpacity().B, FMath::Clamp(CurOpacity - OpacityOffset, 0.0f, 1.0f) });
+
+
+
+}
+
+void UTitleWidget::UpdateImagePosition(float InDeltaTime)
+{
+
 
 }
