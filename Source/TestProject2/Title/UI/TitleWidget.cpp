@@ -32,7 +32,7 @@ void UTitleWidget::NativeOnInitialized()
     {
 
         Orders[i].Position = { StartPosX + offset * i, 0.0f };
-        Orders[i].BackgroundImage->SetRenderTranslation(Orders[i].Position);
+        //Orders[i].BackgroundImage->SetRenderTranslation(Orders[i].Position);
     }
 
 }
@@ -54,18 +54,24 @@ void UTitleWidget::UpdateImageOpacity()
 
         for (int i = CompleteOrderNum; i < Orders.Num() - 1; i++)
         {
-            //const TArray<UPanelSlot*> slots = CanvasPanel->GetSlots();
-            //UCanvasPanelSlot* CPSlot = Cast<UCanvasPanelSlot>(slots[0]);
+            //const TArray<UPanelSlot> slots = CanvasPanel->GetSlots();
+            //UCanvasPanelSlot CPSlot = Cast<UCanvasPanelSlot>(slots[0]);
             //CPSlot->SetPosition(CPSlot->GetPosition() + FVector2D(100, 0));
 
-            Orders[i + 1].BackgroundImage->SetRenderTranslation({ Orders[i].Position.X - 260 /*Orders[i].BackgroundImage->GetDesiredSize().X*/ , 0.0f });
+            float value = Orders[i].Position.X - 260;
+            //Orders[i + 1].BackgroundImage->SetRenderTranslation({ -260.f, 0.0f });
+            //Orders[i + 1].BackgroundImage->SetRenderTranslation({ Orders[i].Position.X - 260 /Orders[i].BackgroundImage->GetDesiredSize().X/ , 0.0f });
         }
 
-        for (int i = CompleteOrderNum; i < Orders.Num() - 1; i++)
+        for (int i = CompleteOrderNum; i < Size - 1; i++)
         {
-
-            Orders[i].BackgroundImage = Orders[i + 1].BackgroundImage;
+            Orders[i] = Orders[i + 1];
+            const FWidgetTransform& trfm = Orders[i].BackgroundImage->GetRenderTransform();
+            Orders[i].BackgroundImage->SetRenderTranslation({ trfm.Translation.X - 280.f, 0.0f });
+            //Orders[i].BackgroundImage = Orders[i + 1].BackgroundImage;
         }
+
+        Size--;
 
 
         GetWorld()->GetTimerManager().ClearTimer(OpacityTimerHandle);

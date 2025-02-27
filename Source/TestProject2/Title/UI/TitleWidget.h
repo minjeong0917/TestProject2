@@ -67,6 +67,7 @@ private:
 	FVector2D TargetOffset = FVector2D(50.0f, 0.0f);
 	float MoveTimeElapsed = 10.0f;
 
+	int Size = 3;
 
 	void UpdateImageOpacity();
 	void UpdateImagePosition(float InDeltaTime);
